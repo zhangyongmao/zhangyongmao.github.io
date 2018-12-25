@@ -7,7 +7,6 @@ description: "Hello World!"
 keyword: "Blog , NPU, helloworld"
 url: "https://zhangyongmao.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
-logo: img/logo.png
 
 # Sidebar settings
 sidebar: false                           # whether or not using Sidebar.
