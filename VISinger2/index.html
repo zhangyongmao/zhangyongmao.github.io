@@ -1,0 +1,365 @@
+<!DOCTYPE hvtml>
+<!-- saved from url=(0033)https://accentspeech.github.io/AccentSpeech// -->
+<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<title>VISinger2</title>
+<meta name="generator" content="Jekyll v3.9.0">
+<meta property="og:title" content="TODO: title">
+<meta property="og:locale" content="en_US">
+<link rel="canonical" href="https://accentspeech.github.io/AccentSpeech//">
+<meta property="og:url" content="https://accentspeech.github.io/AccentSpeech//">
+<meta name="twitter:card" content="summary">
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body data-new-gr-c-s-check-loaded="14.1001.0" data-gr-ext-installed="">
+    <section class="page-header">
+      
+    </section>
+
+<section class="main-content">
+    <h1 id=""><center>VISinger</center></h1>
+    <!-- <center> Yongmao Zhang<sup>1</sup>, Zhichao Wang<sup>1</sup>, Peiji Yang<sup>2</sup>, Hongshen Sun<sup>2</sup>,  Zhisheng Wang<sup>2</sup>, Lei Xie<sup>1</sup> </center>
+    <center> <sup>1</sup> Audio, Speech and Language Processing Group (ASLP@NPU), School of Computer Science, Northwestern Polytechnical University, Xi'an, China</center>
+    <center> <sup>2</sup> Tencent, Shenzhen, China</center> -->
+
+
+<h2 id="abstract">1. Abstract<a name="abstract"></a></h2>
+<p> 
+Learning accent from crowd-sourced data is a feasible way to achieve a target speaker TTS system that can synthesize accent speech. To this end, there are two challenging problems to be solved. First, direct use of the poor acoustic quality crowd-sourced data and the target speaker data in accent transfer will apparently lead to synthetic speech with degraded quality. To mitigate this problem, we take a bottleneck feature (BN) based TTS approach, in which TTS is decomposed into a Text-to-BN (T2BN) module to learn accent and a BN-to-Mel (BN2Mel) module to learn speaker timbre, where neural network based BN feature serves as the intermediate representation that are robust to noise interference. Second, direct training T2BN using the crowd-sourced data in the two-stage system will produce accent speech of target speaker with poor prosody. This is because the the crowd-sourced recordings are contributed from the ordinary unprofessional speakers. To tackle this problem, we update the two-stage approach to a novel three-stage approach, where T2BN and BN2Mel are trained using the high-quality target speaker data and a new BN-to-BN module is plugged in between the two modules to perform accent transfer. To train the BN2BN module, the parrallel unaccented and accented BN features are obtianed by a proposed data augmentation method. Finally the proposed three-stage approach manages to produce accent speech for the target speaker with good prosody, as the prosody pattern is inherited from the professional target speaker and accent transfer is achieved by the BN2BN module at the same time. The proposed approach, named as AccentSpeech, is validated in a Mandarin TTS accent transfer task. </p>
+	<center><img src='fig/model.png' width=600px></center>
+<br><br>
+
+
+<h2>2. Dataset<a name="dataset"></a></h2>
+
+<h3>High-quality unaccented dataset -- DB1 (Standard Mandarin)<a name="dataset"></a></h2>
+
+<table>
+  <tbody>
+    <tr>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Text<strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>卡尔普陪外孙玩滑梯<strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>假语村言别再拥抱我<strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>宝马配挂跛骡鞍,貂蝉怨枕董翁榻<strong></td>
+    </tr>
+
+    <tr>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Audio<strong></td>
+        <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/db1_000001.wav"></audio></td>
+        <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/db1_000002.wav"></audio></td>
+        <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/db1_000003.wav"></audio></td>
+      </tr>
+    </tbody>
+</table>
+
+
+<h3>Low-quality accented dataset -- Kespeech (Accented Mandarin)<a name="dataset"></a></h2>
+
+<p> City: Chengdu-成都 </p>
+
+<table>
+    <tbody>
+      <tr>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>Text<strong></td>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>该行将推出无卡化时代电子支付<strong></td>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>色彩从清新的水蓝到稳重的黑<strong></td>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>五十七万扶贫村实施光伏<strong></td>
+      </tr>
+
+      <tr>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>Audio<strong></td>
+          <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/chengdu_1000005_0e4c205e.wav"></audio></td>
+          <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/chengdu_1000005_145adf99.wav"></audio></td>
+          <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/chengdu_1000005_33142570.wav"></audio></td>
+        </tr>
+      </tbody>
+  </table>
+
+  
+<p> City: Xian-西安 </p>
+
+  <table>
+    <tbody>
+      <tr>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>Text<strong></td>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>但在感知路况的周围环境方面<strong></td>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>评论家白烨也看不上春树能获奖<strong></td>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>但是滚动播放姚贝娜的音乐<strong></td>
+      </tr>
+
+      <tr>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>Audio<strong></td>
+          <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/xian_1000019_05d9c1a3.wav"></audio></td>
+          <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/xian_1000019_31f81403.wav"></audio></td>
+          <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/xian_1000019_4029d49c.wav"></audio></td>
+        </tr>
+      </tbody>
+  </table>
+
+  
+<p> City: Zhengzhou-郑州 </p>
+
+  <table>
+    <tbody>
+      <tr>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>Text<strong></td>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>为素食主义为素食主义者开发的一款班尼迪蛋<strong></td>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>为让余家店六十六户村民住上好的房子<strong></td>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>为天津发展提供舆论支持聚正能量<strong></td>
+      </tr>
+
+      <tr>
+          <td style="text-align: center; width: 150px;" rowspan=1><strong>Audio<strong></td>
+          <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/zhengzhou_1000210_05e465cd.wav"></audio></td>
+          <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/zhengzhou_1000210_11107008.wav"></audio></td>
+          <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/dataset/zhengzhou_1000210_142d5052.wav"></audio></td>
+        </tr>
+      </tbody>
+  </table>
+
+<h2>3. Demos<a name="comparison"></a></h2>
+
+<a name="kespeech"><h3>Synthetic accent speech for DB1 (learned accent from Kespeech)</h3></a>
+
+<p> City: Chengdu-成都 </p>
+
+1、Text：那些庄稼田园在果果眼里感觉太亲切了<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/000001_chengdu.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/000001_chengdu.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/000001_chengdu.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table>
+<br />
+
+2、Text：她把鞋子拎在手上光着脚丫故意踩在水洼里<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/000002_chengdu.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/000002_chengdu.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/000002_chengdu.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+3、Text：如大堂东有海蚀穴二层，穴顶呈弧形，表面多蜂窝状浪花风化而成的小圆穴<br />
+
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/030971_chengdu.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/030971_chengdu.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/030971_chengdu.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+4、Text：分水岭把水流分成两个水系，西入四川盆地的内陆湖，东入湖北宜昌附近的湖泊<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/030972_chengdu.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/030972_chengdu.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/030972_chengdu.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+
+<p> City: Xian-西安 </p>
+
+1、Text：那些庄稼田园在果果眼里感觉太亲切了<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/000001_xian.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/000001_xian.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/000001_xian.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+
+2、Text：她把鞋子拎在手上光着脚丫故意踩在水洼里<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/000002_xian.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/000002_xian.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/000002_xian.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+3、Text：如大堂东有海蚀穴二层，穴顶呈弧形，表面多蜂窝状浪花风化而成的小圆穴<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/030971_xian.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/030971_xian.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/030971_xian.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+4、Text：分水岭把水流分成两个水系，西入四川盆地的内陆湖，东入湖北宜昌附近的湖泊<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/030972_xian.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/030972_xian.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/030972_xian.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+
+<p> City: Zhengzhou-郑州 </p>
+
+1、Text：那些庄稼田园在果果眼里感觉太亲切了<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/000001_zhengzhou.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/000001_zhengzhou.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/000001_zhengzhou.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+
+2、Text：她把鞋子拎在手上光着脚丫故意踩在水洼里<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/000002_zhengzhou.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/000002_zhengzhou.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/000002_zhengzhou.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+3、Text：如大堂东有海蚀穴二层，穴顶呈弧形，表面多蜂窝状浪花风化而成的小圆穴<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/030971_zhengzhou.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/030971_zhengzhou.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/030971_zhengzhou.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+4、Text：分水岭把水流分成两个水系，西入四川盆地的内陆湖，东入湖北宜昌附近的湖泊<br />
+
+<table frame=void >
+    <tbody>
+      <tr>
+        <!-- <td style="text-align: center; width: 150px;" rowspan=1><strong>1、Text：那些庄稼田园在果果眼里感觉太亲切了<strong></td> -->
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>DB1(Standard Mandarin): <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/db1/030972_zhengzhou.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>Accent-Hieratron: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong><audio style="width: 150px;" controls="" preload="none" src="sample/demo/baseline/030972_zhengzhou.wav"></audio>  <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong>AccentSpeech: <strong></td>
+        <td style="text-align: center; width: 150px;" rowspan=1><strong> <audio style="width: 150px;" controls="" preload="none" src="sample/demo/proposed/030972_zhengzhou.wav"></audio> <strong></td>
+      </tr>
+    </tbody>
+</table><br />
+<!-- 
+<table>
+  <tbody>
+    <tr>
+      <td style="text-align: center; width: 150px;" rowspan=2><strong>Target Speaker<strong></td>
+      <td style="text-align: center; width: 150px;" rowspan=2><strong>Source speech<strong></td>
+      <td style="text-align: center; width: 150px;" colspan=5><strong>Method<strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; width: 150px;" rowspan=1><strong>AGAINVC<strong></td>
+      <td style="text-align: center; width: 150px;" rowspan=1><strong>VQMIVC<strong></td>
+      <td style="text-align: center; width: 150px;" rowspan=1><strong>GSE<strong></td>
+      <td style="text-align: center; width: 150px;" rowspan=1><strong>GSE-finetune<strong></td>
+      <td style="text-align: center; width: 150px;" rowspan=1><strong>P3(proposed)<strong></td>
+    </tr>
+        <tr>
+      <td style="text-align: center; width: 150px;" rowspan=4><strong>p340<strong><audio style="width: 150px;" controls="" preload="none" src="sample/spk/p340_clb_arctic_a0014.wav"></audio><audio style="width: 150px;" controls="" preload="none" src="sample/spk/p340_clb_arctic_a0017.wav"></audio></td>
+        <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/source/p340_rms_arctic_a0006.wav"></audio></td>
+        <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/againvc/p340_rms_arctic_a0006.wav"></audio></td>
+        <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/vqmivc/p340_rms_arctic_a0006.wav"></audio></td>
+        <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/gse/p340_rms_arctic_a0006.wav"></audio></td>
+        <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/gse-finetune/p340_rms_arctic_a0006.wav"></audio></td>
+        <td style="text-align: center"><audio style="width: 150px;" controls="" preload="none" src="sample/proposed/p340_rms_arctic_a0006.wav"></audio></td>
+    </tr>
+  </tbody>
+</table>-->
+
+
+
+<!--<h2 id="abstract">4. Visualization on Generated Parallel Data<a name="visualization"></a></h2>
+	<center><img src='fig/mels.png' width=500px></center>
+<p> 
+The accent transfer model is trained by parallel data generated by data augmentation. Therefore, we visualize a pair of generated parallel samples, as shown in Fig3. Specifically, Fig.3 (a) shows the mel-spectrogram of a crowd-sourced recording from an accent speaker. We can clearly see the background noise (ringing tone) along with the speech collected during the audio recording process.
+We extract the BN feature from the same audio in Fig.3 (a) and convert the BN to mel-spectrogram through the BN2Mel model trianed with the high-quality (DB1) data. The mel-spectrogram is shown in Fig.3 (b). We can see that most of the noise is removed. With the same transcript of the crowd-sourced audio recording in Fig.3 (a) as input, the high quality DB1 data trained T2BN + BN2Mel generates the corresponding mel-spectrogram shown in Fig.3 (c). Hence Fig.3 (a) and (c) are associated with the same linguistic content but difference accent. Thus the corresponding paired unaccented and accented BN features are used to train the BN2BN model for the purpose of accent transfer.
+</p>
+<br><br>-->
+
+
+
+      <footer class="site-footer">
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com/">GitHub Pages</a>.</span>
+      </footer>
+    </section>
+
+</body></html>
